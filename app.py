@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 import os
+from ai_utils import categorize
 
 app = Flask(__name__)
 
@@ -11,10 +12,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.path.join(base_dir, 'tas
 db = SQLAlchemy(app)
 
 class Task(db.Model):
-    __tablename__ = 'tasks'
+    __tablename__ = 'tasksai'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), nullable=False)
     completed = db.Column(db.Boolean, default=False)
+    category = db.Column(db.String(50), nullable=False)
 
 with app.app_context():
     db.create_all()
@@ -26,11 +28,12 @@ def home():
 
 @app.route('/add', methods=['POST'])
 def add_task():
-    title = request.form.get('title')
-    if title:
-        new_task = Task(title=title)
-        db.session.add(new_task)
-        db.session.commit()
+    title = request.form['title']
+    category = categorize(title)
+    print(category)  # Debugging line to check category assignment
+    new_task = Task(title=title, category=category)
+    db.session.add(new_task)
+    db.session.commit()
     return redirect('/')
 
 @app.route('/delete/<int:task_id>')

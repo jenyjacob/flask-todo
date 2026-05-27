@@ -10,8 +10,7 @@
     </form>
     <ul>
         {% for task in tasks %}
-        <li>
-            {{task.title}}
+        <li>[{{ task.category|capitalize }}] {{task.title}}
             [Completed: {{ 'Yes' if task.completed else 'No' }}]
             <a href="/delete/{{task.id}}">❌</a>
             <a href="/complete/{{task.id}}">✅</a>
