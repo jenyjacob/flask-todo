@@ -1,0 +1,23 @@
+<html>
+<head>
+    <title>To-Do List</title>
+</head>
+<body>
+    <h1> My To-DO List </h1>
+    <form method="POST" action="/add">
+        <input type="text" name="title" placeholder="Enter a new task" required>
+        <button type="submit">Add Task</button>
+    </form>
+    <ul>
+        {% for task in tasks %}
+        <li>
+            {{task.title}}
+            [Completed: {{ 'Yes' if task.completed else 'No' }}]
+            <a href="/delete/{{task.id}}">❌</a>
+            <a href="/complete/{{task.id}}">✅</a>
+            <a href="/edit/{{task.id}}">✏️</a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
